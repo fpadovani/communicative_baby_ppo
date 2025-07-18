@@ -55,7 +55,7 @@ I have two script to run this PPO Training, one is slower than the other (that u
 The fine-tuned models can be found here:
 - [fpadovani/rfblue-baby](https://huggingface.co/fpadovani/rfblue-baby)
 - [fpadovani/rfsem1-baby](https://huggingface.co/fpadovani/rfsem1-baby)
-- [fpadovani/rfscore-bay](https://huggingface.co/fpadovani/rfscore-baby)
+- [fpadovani/rfscore-baby](https://huggingface.co/fpadovani/rfscore-baby)
 
 ## Evaluation with DPO
 We should familiarize with the BabyLM Challenge evaluation pipeline of this year -> [2025](https://github.com/babylm/evaluation-pipeline-2025)
