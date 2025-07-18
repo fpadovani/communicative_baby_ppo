@@ -34,9 +34,25 @@ To do so I used the script `answers_generation_vllm_fast.py` with the following 
 2. SEMANTIC SIMILARITY (cosine similarity calculated using this model `embedder = SentenceTransformer('all-MiniLM-L6-v2')`
 
 
-You can fine-tune with PPO the baseline model using this command and providing semsim or bleu as argument:
+You can fine-tune with PPO the baseline model using this command and providing semsim or bleu as reward_fn function:
 
-<pre><code> pyhton ppo_training_blue_semsim --semsim </code></pre>
+<pre><code> python ppo_training_blue_semsim --reward_fn semsim </code></pre>
+
+3. The third type of reward is directly assigned by the LLM (allenai/OLMo-2-1124-7B-Instruct) model, that is asked to score the answer of the baby model to a mother prompt. This is the prompt I used:
+
+<pre><code> 
+"<|system|>\nYou are presented with a dialogue between a mother (MOT) and a child (CHI). "
+"Please rate how contextually appropriate and fluent the child's response is, on a scale from 0 (completely unfitting) "
+"to 5 (perfectly fine answer). If CHI answer is too short rate it low.\n<|end|>\n"
+f"<|user|>\nMOT: {mot}\nCHI: {chi}\n<|end|>\n<|assistant|>\n"
+</code></pre>
+
+I have two script to run this PPO Training, one is slower than the other (that uses VLLM).
+
+- `ppo_training_score.py`
+- `ppo_training_score_faster.py`
+
+
 
 
 
