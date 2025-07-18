@@ -52,6 +52,25 @@ I have two script to run this PPO Training, one is slower than the other (that u
 - `ppo_training_score_faster.py`
 
 
+The fine-tuned models can be found here:
+- [fpadovani/rfblue-baby](https://huggingface.co/fpadovani/rfblue-baby)
+- [fpadovani/rfsem1-baby](https://huggingface.co/fpadovani/rfsem1-baby)
+- [fpadovani/rfscore-bay](https://huggingface.co/fpadovani/rfscore-baby)
+
+## Evaluation with DPO
+We should familiarize with the BabyLM Challenge evaluation pipeline of this year -> [2025](https://github.com/babylm/evaluation-pipeline-2025)
+
+In the meantime I have a script that evaluate our baseline and finetuned models on BLIMP and on our own minimal dialogue pair dataset:
+
+- *`evaluate_blimp.py`* 
+- *`evaluate_minpairs.py`*
+
+**As soon as I have the final results I will post them here!**
+
+## Plots of reward 
+In the `./plots` folder you can find the reward trend. The plots that are present do not refer to a complete training.
+I will upload the final ones as soon as I have the fully fine-tuned models. The important thing is the growing reward ;)
+
 
 
 
