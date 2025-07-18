@@ -23,7 +23,7 @@ plt.grid(True)
 plt.legend()
 plt.tight_layout()
 plt.show()
-plt.savefig("reward_trend_plot_blue_best.png")  # Save the plot as an image file
+plt.savefig("./plots/reward_trend_plot_blue_best.png")  # Save the plot as an image file
 
 
 
@@ -49,4 +49,4 @@ plt.grid(True)
 plt.legend()
 plt.tight_layout()
 plt.show()
-plt.savefig("reward_trend_plot_sem_1_best.png")  # Save the plot as an image file
+plt.savefig("./plots/reward_trend_plot_sem_1_best.png")  # Save the plot as an image file

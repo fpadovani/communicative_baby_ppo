@@ -6,6 +6,41 @@ import torch
 from datasets import Dataset
 
 
+#######
+# PROMPTING with vLLM
+#######
+
+
+def generate_teacher_responses_vllm_batch(llm, mother_sents, sampling_params, scorer_model, scorer_tokenizer):
+    """Generate and rank responses using vLLM and HuggingFace for scoring."""
+    system_msg = (
+        "You are a young child having a conversation with your mother. "
+        "When your mother says something, you should answer as a typical kind and natural-sounding child. "
+        "Do NOT repeat her words. Instead, give a new, relevant answer that shows understanding. "
+        "Keep it short and child-like."
+    )
+
+    # Step 1: Create prompts for vLLM
+    full_prompts = []
+    for mother_sent in mother_sents:
+        user_msg = f"Mother says:{mother_sent}\n Child answers:"
+        full_prompt = f"{system_msg}\n{user_msg}"
+        full_prompts.append(full_prompt)
+
+    # Step 2: Generate responses (batch)
+    outputs = llm.generate(full_prompts, sampling_params)
+
+    # Step 3: Collect raw responses
+    all_responses = []
+    for output in outputs:
+        responses = [completion.text.strip() for completion in output.outputs]
+        all_responses.append(responses)
+
+    return all_responses
+
+
+
+
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
 bleu_metric = evaluate.load("bleu")
 
@@ -19,12 +54,6 @@ def custom_collate_fn(batch):
         "best_response": teacher_responses
     }
 
-def custom_collate_fn_ppo_prompt(batch):
-    # batch is a list of dicts, each with 'query'
-    prompts = [item["query"] for item in batch]
-    return {
-        "query": prompts
-    }
 
 # Filter and restructure dataset
 def make_dataset(shuffled_data):
@@ -33,13 +62,6 @@ def make_dataset(shuffled_data):
         "best_response": [item["best_response"] for item in shuffled_data]
     })
 
-def calculate_bleu_evaluate(reference, hypothesis):
-    """
-    reference and hypothesis should be strings
-    Returns BLEU score between 0 and 1.
-    """
-    result = bleu_metric.compute(predictions=[hypothesis], references=[[reference]])
-    return result["bleu"]
 
 
 def calculate_bleu1_nltk(reference, hypothesis):
@@ -55,41 +77,6 @@ def calculate_bleu1_nltk(reference, hypothesis):
         weights=(1.0, 0, 0, 0),
         smoothing_function=smoothie
     )
-
-def generate_teacher_responses(teacher_model, mother_sent, num_responses=10):
-    
-    system_msg = "Please respond in a way that mimics the style of a good child in response to mother's speech. You should respond in a nice way! The response should be only a meaningful very short sentence. Don't include any additional text or mother answers"
-    user_msg = f"Mother: {mother_sent}\n Child: "
-
-    prompt = f"{system_msg}\n{user_msg}"
-
-    outputs = teacher_model(prompt, max_new_tokens=20, do_sample=True, num_return_sequences=num_responses, temperature= 0.5)
-
-    responses = [out['generated_text'].replace(prompt, "").strip() for out in outputs]
-    return responses
-
-
-def generate_teacher_score(teacher_model, mother_sent, baby_response):
-    """
-    Generate a score from the teacher model for the baby response.
-    The score should be between 1 and 5.
-    """
-    system_msg = "You are presented with a dialogue between a mother (MOT) and a child (CHI). Please rate how fluent the child's response is, on a scale from 1 (completely unfitting) to 5 (perfectly fine answer):"
-    user_msg = f"MOT:{mother_sent} CHI:{baby_response}"
-
-    prompt = f"{system_msg}\n{user_msg}"
-
-    outputs = teacher_model(prompt, max_new_tokens=10, do_sample=False)
-    
-    # Extract the score from the output
-    score_text = outputs[0]['generated_text'].replace(prompt, "").strip()
-    
-    # Try to convert to an integer
-    try:
-        score = int(score_text)
-        return max(1, min(score, 5))  # Ensure score is between 1 and 5
-    except ValueError:
-        return None  # If conversion fails, return None
     
 
 
@@ -106,24 +93,6 @@ def extract_first_chi_utterance(text):
         return matches[0].strip().lower()  # Keep punctuation
     return ""
 
-def extract_first_answer_with_punct(text):
-    """
-    Extract the first sentence from the teacher response string,
-    starting from the beginning of the answer and including
-    the first punctuation mark (.!?).
-    """
-    
-    #text = re.sub(r"\b\d+[\.)]\s*|\b\d+\b", "", text)
-    punc_match = re.search(r"[.!?]", text)
-    
-    if punc_match:
-        pos = punc_match.start()
-        text = text[:pos + 1]
-        text = text.split("\n")[0]
-        return text
-    else:
-        text = text.split("\n")[0]
-        return text
 
 
 def extract_first_utterance(text):
@@ -194,21 +163,10 @@ def custom_collate_fn_olmo(batch):
 def build_teacher_prompt(mot, chi):
     return (
         "<|system|>\nYou are presented with a dialogue between a mother (MOT) and a child (CHI). "
-        "Please rate how fluent the child's response is, on a scale from 0 (completely unfitting) to 5 (perfectly fine answer). "
-        "Respond with only the number.\n<|end|>\n"
+        "Please rate how contextually appropriate and fluent the child's response is, on a scale from 0 (completely unfitting) "
+        "to 5 (perfectly fine answer). If CHI answer is too short rate it low.\n<|end|>\n"
         f"<|user|>\nMOT: {mot}\nCHI: {chi}\n<|end|>\n<|assistant|>\n"
     )
-
-def build_teacher_prompt_new_model(mother_utt, child_utt):
-    return (
-        "<|im_start|>system\n"
-        "You are presented with a dialogue between a mother (MOT) and a child (CHI). "
-        "Rate how contextually plausible and fluent the child's utterance is in response to the mother's utterance on a scale from 1 to 5. Respond with only the number.<|im_end|>\n"
-        "<|im_start|>user\n"
-        f"MOT: {mother_utt}\CHI: {child_utt}\nScore (1-5):<|im_end|>\n"
-        "<|im_start|>assistant\n"
-    )
-
 
 
 def extract_score(text):

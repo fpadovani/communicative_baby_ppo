@@ -2,7 +2,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
 BABY_baseline = "bbunzeck/another-llama"
 BABY_fine_tuned = "./fine_tuned_models/rfblue1-baby-step-7000"
-blimp_folder = './evaluation_zorro/test_suites/blimp'
+blimp_folder = './test_suites/blimp'
 
 
 # Load tokenizer (they are likely the same for both models)

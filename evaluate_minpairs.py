@@ -1,43 +1,55 @@
 import pandas as pd
+from datasets import load_dataset
 from minicons import scorer
-from transformers import AutoTokenizer
 import torch
 from tqdm import tqdm
 
-# Load minimal pairs from CSV
-data = pd.read_csv("./dpo_dataset/len_pairs_no_overlap_1.csv")
-print(f"Loaded {len(data)} pairs.")
+# CONFIG: Choose your model and dataset
+DATASET_PATH = "fpadovani/child-dpo-preferences-eval"  # HF dataset repo
+BASELINE_PATH = "bbunzeck/another-llama"
+FINETUNED_PATH = "" #choose among the fine-tuned models [fpadovani/rfblue1-baby, fpadovani/rfsem1-baby, fpadovani/rfscore1-baby]
+SPLIT = 'train'
 
-# Initialize your models
-baseline_path = "bbunzeck/another-llama"
+
+
+dataset = load_dataset(DATASET_PATH, split=SPLIT)
+
+
+# Convert to list of dicts for iteration
+data = dataset.to_list()
 
 # Load MiniCONS models
-baseline_model = scorer.IncrementalLMScorer(baseline_path, device='cuda' if torch.cuda.is_available() else 'cpu')
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+baseline_model = scorer.IncrementalLMScorer(BASELINE_PATH, device=device)
+finetuned_model = scorer.IncrementalLMScorer(FINETUNED_PATH, device=device)
 
-# Evaluate a model on the dataset
-def evaluate_model(model, data, pos_col="pospair", neg_col="negpair"):
+# Evaluation function
+def evaluate_model(model, data):
     correct = 0
     total = len(data)
-    
-    for _, row in tqdm(data.iterrows(), total=total):
-        pos_sent = row[pos_col]
-        neg_sent = row[neg_col]
 
-        pos_score = model.sequence_score(pos_sent)
-        neg_score = model.sequence_score(neg_sent)
+    for row in tqdm(data):
+        prompt = row["prompt"]
+        chosen = row["chosen"]
+        rejected = row["rejected"]
 
-        # Higher score (logprob) = better
+        pos_input = prompt + " " + chosen
+        neg_input = prompt + " " + rejected
+
+        pos_score = model.sequence_score(pos_input)
+        neg_score = model.sequence_score(neg_input)
+
         if pos_score > neg_score:
             correct += 1
 
-    accuracy = correct / total
-    return accuracy
+    return correct / total
 
-# Run evaluations
-print("🔍 Evaluating baseline model...")
+
+
+
 baseline_acc = evaluate_model(baseline_model, data)
-print(f"✅ Baseline model accuracy: {baseline_acc:.3f}")
+print(f"Baseline model accuracy: {baseline_acc:.3f}")
 
-'''print("🔍 Evaluating fine-tuned model...")
+
 finetuned_acc = evaluate_model(finetuned_model, data)
-print(f"✅ Fine-tuned model accuracy: {finetuned_acc:.3f}")'''
+print(f"Fine-tuned model accuracy: {finetuned_acc:.3f}")

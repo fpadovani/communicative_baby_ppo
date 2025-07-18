@@ -52,7 +52,7 @@ def evaluate_blimp(lm, test_suite_folder, lower_case=False):
 
 BABY_baseline = "bbunzeck/another-llama"
 BABY_fine_tuned = "./fine_tuned_models/rfblue1-baby-step-11000"
-blimp_folder = './evaluation_zorro/test_suites/blimp'
+blimp_folder = './test_suites/blimp'
 
 
 lm = scorer.IncrementalLMScorer(BABY_baseline, device='cuda')
