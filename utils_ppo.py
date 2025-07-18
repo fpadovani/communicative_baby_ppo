@@ -6,6 +6,9 @@ import torch
 from datasets import Dataset
 
 
+embedder = SentenceTransformer('all-MiniLM-L6-v2')
+
+
 #######
 # PROMPTING with vLLM
 #######
@@ -38,11 +41,6 @@ def generate_teacher_responses_vllm_batch(llm, mother_sents, sampling_params, sc
 
     return all_responses
 
-
-
-
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
-bleu_metric = evaluate.load("bleu")
 
 
 def custom_collate_fn(batch):
