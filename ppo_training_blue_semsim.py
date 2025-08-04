@@ -16,23 +16,52 @@ global_step = 0
 SAVE_EVERY = 2000
 log_rewards_file = "./txt_files/reward_tracking_log_sem_1_best.csv"
 
+with open(log_rewards_file, "w") as f:
+    f.write("epoch,batch,avg_reward\n")
+
 # Reward function — uses baby output + teacher references
-def reward_fn_blue(prompts, baby_responses, teacher_lists):
+def reward_fn_blue(prompts, baby_responses, teacher_lists, log_file=None):
     rewards = []
-    for prompt, baby_out, teacher_text in zip(prompts, baby_responses, teacher_lists):
-        if not baby_out:
-            rewards.append(torch.tensor(0.0))
-            continue
-        bleu_score = calculate_bleu1_nltk(teacher_text.lower(), baby_out)
-        rewards.append(torch.tensor(bleu_score, dtype=torch.float))
+
+    with open(log_file, "a", encoding="utf-8") as f:
+        for prompt, baby_out, teacher_text in zip(prompts, baby_responses, teacher_lists):
+
+            if not baby_out:
+                rewards.append(torch.tensor(0.0))
+                f.write(f"Prompt: {prompt}\n")
+                f.write("No usable baby response.\n")
+                f.write("—" * 40 + "\n")
+                continue
+
+            
+            bleu_score = calculate_bleu1_nltk(teacher_text.lower(), baby_out)
+            rewards.append(torch.tensor(bleu_score, dtype=torch.float))
+
+            f.write(f"Prompt: {prompt}\n")
+            f.write(f"Baby said: {baby_out}\n")
+            f.write(f"Teacher refs: {teacher_text}\n")
+            f.write(f"BLEU scores: {bleu_score}\n")
+            f.write("—" * 40 + "\n")
+
     return rewards
 
-def reward_fn_sem_similarity(prompts, baby_responses, teacher_lists):
+def reward_fn_sem_similarity(prompts, baby_responses, teacher_lists, log_file=None):
     rewards = []
-    for prompt, baby_out, teacher_text in zip(prompts, baby_responses, teacher_lists):
-        emb_b, emb_t = embedder.encode([baby_out, teacher_text], convert_to_tensor=True)
-        sem_sim = util.cos_sim(emb_b, emb_t).item()
-        rewards.append(torch.tensor(float(sem_sim), dtype=torch.float))
+
+    with open(log_file, "a", encoding="utf-8") as f:
+        for prompt, baby_out, teacher_text in zip(prompts, baby_responses, teacher_lists):
+
+            emb_b, emb_t = embedder.encode([baby_out, teacher_text], convert_to_tensor=True)
+            sem_sim = util.cos_sim(emb_b, emb_t).item()
+            rewards.append(torch.tensor(float(sem_sim), dtype=torch.float))
+
+            f.write(f"Prompt: {prompt}\n")
+            f.write(f"Baby said: {baby_out}\n")
+            f.write(f"Teacher refs: {teacher_text}\n")
+            f.write(f"Rewards scores: {rewards}\n")
+            f.write("—" * 40 + "\n")
+            
+
     return rewards
 
 def parse_arguments():
@@ -78,7 +107,7 @@ def main():
     create_repo(f"fpadovani/{repo_name}", exist_ok=True)
 
     # PPO config
-    config = PPOConfig(batch_size=16, mini_batch_size=2)
+    config = PPOConfig(batch_size=16, mini_batch_size=4)
 
     ppo = PPOTrainer(
         config,
@@ -89,7 +118,7 @@ def main():
     )
 
     # === Training Loop ===
-    for epoch in range(10):
+    for epoch in range(2):
         random.shuffle(raw_data)
         dataset_epoch = make_dataset(raw_data)
 

@@ -4,4 +4,6 @@ txt_files/mother_prompts_1.txt
 txt_files/third_best_options.json
 txt_files/childes-dialogue2.txt
 txt_files/first_best_options.json
+txt_files/mom_scores.jsonl
+txt_files/
 .venv/

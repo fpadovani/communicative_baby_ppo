@@ -1,9 +1,23 @@
-import re
-import evaluate
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from sentence_transformers import SentenceTransformer, util
 import torch
 from datasets import Dataset
+import unicodedata, re
+
+DEBUG_ONCE = True          # flips to False after 
+
+
+def norm_key(s: str) -> str:
+    s = unicodedata.normalize("NFKC", s.strip())
+    s = s.strip('"\''"“”‘’")              # strip any straight/curly quotes
+    s = s.replace("*MOT:", "").strip()
+    s = re.sub(r"\s+", " ", s)
+    return s
+
+
+
+def safe_tensor(x, device):
+    return torch.tensor(float(x), dtype=torch.float32, device=device)
 
 
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
@@ -171,3 +185,19 @@ def extract_score(text):
         """Extract numerical score from text"""
         match = re.search(r"[1-5](?:\.\d+)?", text)
         return float(match.group(0)) if match else 0.0
+
+
+def lnP_mom(prompt, answer, tokenizer, model):
+    """
+    Return natural‑log probability of `answer` under MOM given `prompt`.
+    `prompt` should be the *MOT sentence only* (no *MOT tag).
+    """
+    ctx = prompt + " "    
+    ids_ctx = tokenizer(ctx, add_special_tokens=False).input_ids
+    ids_ans = tokenizer(" " + answer, add_special_tokens=False).input_ids
+    ids = torch.tensor([ids_ctx + ids_ans], device=model.device)
+    labels = ids.clone()
+    labels[0, :len(ids_ctx)] = -100       # mask prompt tokens
+    with torch.no_grad():
+        loss = model(ids, labels=labels).loss    # mean NLL (nats)
+    return -loss.item() * len(ids_ans)   
