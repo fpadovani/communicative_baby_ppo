@@ -11,7 +11,7 @@ BASELINE_PATH = "bbunzeck/another-llama"
 BLUE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
 SEMSIM = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
 SCORE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
-UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_ppo/fine_tuned_models/babylm-conf/epoch-2"  
+UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_ppo/fine_tuned_models/babylm-conf/epoch-1"  
 SPLIT = "train"
 
 # Load dataset from HuggingFace
