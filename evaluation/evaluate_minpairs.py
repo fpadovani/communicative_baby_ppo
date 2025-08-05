@@ -11,7 +11,7 @@ BASELINE_PATH = "bbunzeck/another-llama"
 BLUE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
 SEMSIM = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
 SCORE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
-UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630"  
+UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_ppo/fine_tuned_models/babylm-conf/epoch-1"  
 SPLIT = "train"
 
 # Load dataset from HuggingFace
@@ -62,28 +62,28 @@ def evaluate_model(model, data):
 
 #### WORDS MATCHED EVALUATION
 
-finetuned_1_words = evaluate_model(blue, data_words)
+'''finetuned_1_words = evaluate_model(blue, data_words)
 print(f"Fine-tuned model accuracy: {finetuned_1_words:.3f}")
 
 finetuned_2_words = evaluate_model(semsim, data_words)
 print(f"Fine-tuned model accuracy: {finetuned_2_words:.3f}")
 
 finetuned_3_words = evaluate_model(score, data_words)
-print(f"Fine-tuned model accuracy: {finetuned_3_words:.3f}")
+print(f"Fine-tuned model accuracy: {finetuned_3_words:.3f}")'''
 
 finetuned_4_words = evaluate_model(uncertainty, data_words)
 print(f"Fine-tuned model accuracy: {finetuned_4_words:.3f}")
 
 #### TOKENS MATCHED EVALUATION
 
-finetuned_1_tokens = evaluate_model(blue, data_tokens)
+'''finetuned_1_tokens = evaluate_model(blue, data_tokens)
 print(f"Fine-tuned model accuracy: {finetuned_1_tokens:.3f}")
 
 finetuned_2_tokens = evaluate_model(semsim, data_tokens)
 print(f"Fine-tuned model accuracy: {finetuned_2_tokens:.3f}")
 
 finetuned_3_tokens = evaluate_model(score, data_tokens)
-print(f"Fine-tuned model accuracy: {finetuned_3_tokens:.3f}")
+print(f"Fine-tuned model accuracy: {finetuned_3_tokens:.3f}")'''
 
 finetuned_4_tokens = evaluate_model(uncertainty, data_tokens)
 print(f"Fine-tuned model accuracy: {finetuned_4_tokens:.3f}")

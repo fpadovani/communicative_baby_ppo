@@ -8,3 +8,4 @@ txt_files/mom_scores.jsonl
 txt_files/
 .venv/
 evaluation/test_suites/
+fine_tuned_models/
