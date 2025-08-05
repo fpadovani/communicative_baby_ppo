@@ -60,10 +60,11 @@ The fine-tuned models can be found here:
 ## Evaluation with DPO
 We should familiarize with the BabyLM Challenge evaluation pipeline of this year -> [2025](https://github.com/babylm/evaluation-pipeline-2025)
 
-In the meantime I have a script that evaluate our baseline and finetuned models on BLIMP and on our own minimal dialogue pair dataset:
+In the meantime I have scripts that evaluate our baseline and finetuned models on Zorro, on our own minimal dialogue pair dataset (with words matched length and token matched length) and on single lexical items (taken from Bastian lexical decision task paper -> [bbunzeck/lexical-decision](https://huggingface.co/datasets/bbunzeck/lexical-decision):
 
-- *`evaluate_blimp.py`* 
-- *`evaluate_minpairs.py`*
+- *`./evaluation/evaluate_zorro.py`* 
+- *`./evaluation/evaluate_dialogue_minpairs.py`*
+- *`./evaluation/evaluate_lexicon.py`*
 
 **As soon as I have the final results I will post them here!**
 
