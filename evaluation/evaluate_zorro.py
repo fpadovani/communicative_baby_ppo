@@ -1,8 +1,7 @@
 from minicons import scorer
 from pathlib import Path
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 
-def evaluate_blimp(lm, test_suite_folder, lower_case=False):
+def evaluate_zorro(lm, test_suite_folder, lower_case=False):
 
     paradigm_accuracies = {}
     test_suite_folder = Path(test_suite_folder)
@@ -50,18 +49,34 @@ def evaluate_blimp(lm, test_suite_folder, lower_case=False):
     return paradigm_accuracies, overall_accuracy
 
 
-BABY_baseline = "bbunzeck/another-llama"
-BABY_fine_tuned = "./fine_tuned_models/rfblue1-baby-step-11000"
-blimp_folder = './test_suites/blimp'
+BASELINE_PATH = "bbunzeck/another-llama"
+FINETUNED_PATH_1 = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630"
+FINETUNED_PATH_2 = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
+zorro_folder = '/Users/frapadovani/Desktop/communicative_baby_dpo/evaluation/test_suites/zorro'
 
+baseline_model = scorer.IncrementalLMScorer(BASELINE_PATH, device='cpu')
+finetuned_1 = scorer.IncrementalLMScorer(FINETUNED_PATH_1, device='cpu')
+finetuned_2 = scorer.IncrementalLMScorer(FINETUNED_PATH_2, device='cpu')
 
-lm = scorer.IncrementalLMScorer(BABY_baseline, device='cuda')
+paradigm_acc_baseline, overall_acc_baseline = evaluate_zorro(
+    lm=baseline_model,
+    test_suite_folder=zorro_folder,
+    lower_case=True
+)
+print(paradigm_acc_baseline, overall_acc_baseline)
 
-paradigm_acc, overall_acc = evaluate_blimp(
-    lm=lm,
-    test_suite_folder=blimp_folder,
+paradigm_acc_finetuned1, overall_acc_finetuned1 = evaluate_zorro(
+    lm=finetuned_1,
+    test_suite_folder=zorro_folder,
     lower_case=True
 )
 
-print(paradigm_acc, overall_acc)
+print(paradigm_acc_finetuned1, overall_acc_finetuned1)
+
+paradigm_acc_finetuned2, overall_acc_finetuned2 = evaluate_zorro(
+    lm=finetuned_2,
+    test_suite_folder=zorro_folder,
+    lower_case=True
+)
+print(paradigm_acc_finetuned2, overall_acc_finetuned2)
 

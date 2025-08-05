@@ -2,8 +2,10 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 import torch
-from transformers import AutoTokenizer, LogitsProcessor, LogitsProcessorList
+from transformers import GPT2Tokenizer, pipeline, AutoTokenizer, AutoModelForCausalLM
 from sentence_transformers import SentenceTransformer, util
+from datasets import Dataset
+from transformers import LogitsProcessor, LogitsProcessorList
 from huggingface_hub import HfApi, create_repo, upload_folder
 from trl import AutoModelForCausalLMWithValueHead, PPOConfig, PPOTrainer
 from torch.utils.data import DataLoader
@@ -85,12 +87,15 @@ def main():
         repo_name = "rfblue-abs-002"
         log_rewards_file = "./txt_files/reward_tracking_blue.csv"
         log_file = "ppo_training_blue.txt"
+        
     else:
         reward_fn = reward_fn_sem_similarity
         repo_name = "rfsem-abs-002"
         log_rewards_file = "./txt_files/reward_tracking_semsim.csv"
         log_file = "ppo_training_semsim.txt"
     
+
+    create_repo(f"fpadovani/{repo_name}", exist_ok=True)
 
     with open(log_rewards_file, "w") as f:
         f.write("epoch,batch,avg_reward\n")
@@ -186,7 +191,7 @@ def main():
                 tokenizer_baby.save_pretrained(output_dir)
 
                 upload_folder(
-                    repo_id=repo_name,
+                    repo_id=f"fpadovani/{repo_name}",
                     folder_path=output_dir,
                     path_in_repo=f"checkpoint-{global_step}", 
                     commit_message=f"Add checkpoint at step {global_step}",
@@ -200,7 +205,7 @@ def main():
         tokenizer_baby.save_pretrained(output_dir)
 
         upload_folder(
-            repo_id=repo_name,
+            repo_id=f"fpadovani/{repo_name}",
             folder_path=output_dir,
             path_in_repo=f"epoch-{epoch+1}", 
             commit_message=f"Add checkpoint at step {global_step}",
@@ -211,9 +216,8 @@ def main():
     ppo.model.save_pretrained(output_dir)
     tokenizer_baby.save_pretrained(output_dir)
 
-    create_repo(repo_name, exist_ok=True)
-    ppo.model.push_to_hub(repo_name)
-    tokenizer_baby.push_to_hub(repo_name)
+    ppo.model.push_to_hub(f"fpadovani/{repo_name}")
+    tokenizer_baby.push_to_hub(f"fpadovani/{repo_name}")
 
 if __name__ == "__main__":
     main()
