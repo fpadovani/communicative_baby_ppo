@@ -50,13 +50,17 @@ def evaluate_zorro(lm, test_suite_folder, lower_case=False):
 
 
 BASELINE_PATH = "bbunzeck/another-llama"
-FINETUNED_PATH_1 = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630"
-FINETUNED_PATH_2 = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
+BLUE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630"
+SEMSIM = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
+SCORE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630"
+UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_ppo/fine_tuned_models/babylm-conf/epoch-1"
 zorro_folder = '/Users/frapadovani/Desktop/communicative_baby_dpo/evaluation/test_suites/zorro'
 
 baseline_model = scorer.IncrementalLMScorer(BASELINE_PATH, device='cpu')
-finetuned_1 = scorer.IncrementalLMScorer(FINETUNED_PATH_1, device='cpu')
-finetuned_2 = scorer.IncrementalLMScorer(FINETUNED_PATH_2, device='cpu')
+blue = scorer.IncrementalLMScorer(BLUE, device='cpu')
+semsim = scorer.IncrementalLMScorer(SEMSIM, device='cpu')
+score = scorer.IncrementalLMScorer(BLUE, device='cpu')
+uncertainty = scorer.IncrementalLMScorer(SEMSIM, device='cpu')
 
 paradigm_acc_baseline, overall_acc_baseline = evaluate_zorro(
     lm=baseline_model,
@@ -66,7 +70,7 @@ paradigm_acc_baseline, overall_acc_baseline = evaluate_zorro(
 print(paradigm_acc_baseline, overall_acc_baseline)
 
 paradigm_acc_finetuned1, overall_acc_finetuned1 = evaluate_zorro(
-    lm=finetuned_1,
+    lm=blue,
     test_suite_folder=zorro_folder,
     lower_case=True
 )
@@ -74,9 +78,25 @@ paradigm_acc_finetuned1, overall_acc_finetuned1 = evaluate_zorro(
 print(paradigm_acc_finetuned1, overall_acc_finetuned1)
 
 paradigm_acc_finetuned2, overall_acc_finetuned2 = evaluate_zorro(
-    lm=finetuned_2,
+    lm=semsim,
     test_suite_folder=zorro_folder,
     lower_case=True
 )
 print(paradigm_acc_finetuned2, overall_acc_finetuned2)
+
+paradigm_acc_finetuned3, overall_acc_finetuned3 = evaluate_zorro(
+    lm=score,
+    test_suite_folder=zorro_folder,
+    lower_case=True
+)
+print(paradigm_acc_finetuned3, overall_acc_finetuned3)
+
+paradigm_acc_finetuned4, overall_acc_finetuned4 = evaluate_zorro(
+    lm=uncertainty,
+    test_suite_folder=zorro_folder,
+    lower_case=True
+)
+print(paradigm_acc_finetuned4, overall_acc_finetuned4)
+
+
 
