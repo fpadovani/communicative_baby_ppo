@@ -8,10 +8,10 @@ from tqdm import tqdm
 DIALOGUE_WORDS= "fpadovani/dialogue_eval_words" 
 DIALOGUE_TOKENS = "fpadovani/dialogue_eval_tokens" 
 BASELINE_PATH = "bbunzeck/another-llama"
-BLUE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
-SEMSIM = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete/checkpoints/checkpoint-5630"
-SCORE = "/Users/frapadovani/Desktop/communicative_baby_dpo/dpo_outputs_complete_synthetic/checkpoints/checkpoint-5630" 
-UNCERTAINTY = "/Users/frapadovani/Desktop/communicative_baby_ppo/fine_tuned_models/babylm-conf/epoch-1"  
+BLUE = "./models/rfblue-kl/epoch-1/epoch-1"
+SEMSIM = "./models/rfsem-kl/epoch-1/epoch-1"
+SCORE = "./models/rfscore-kl/checkpoint-5000/checkpoint-5000"
+UNCERTAINTY = "./models/rfconf-baby/epoch-1/epoch-1"
 SPLIT = "train"
 
 # Load dataset from HuggingFace
@@ -36,7 +36,7 @@ baseline_model = scorer.IncrementalLMScorer(BASELINE_PATH, device=device)
 blue = scorer.IncrementalLMScorer(BLUE, device=device)
 semsim = scorer.IncrementalLMScorer(SEMSIM, device=device)
 score = scorer.IncrementalLMScorer(SCORE, device=device)
-uncertainty = scorer.IncrementalLMScorer(UNCERTAINTY, device=device)
+#uncertainty = scorer.IncrementalLMScorer(UNCERTAINTY, device=device)'''
 
 # Evaluation function
 def evaluate_model(model, data):
@@ -62,28 +62,28 @@ def evaluate_model(model, data):
 
 #### WORDS MATCHED EVALUATION
 
-'''finetuned_1_words = evaluate_model(blue, data_words)
-print(f"Fine-tuned model accuracy: {finetuned_1_words:.3f}")
+#finetuned_1_words = evaluate_model(blue, data_words)
+#print(f"Fine-tuned model accuracy: {finetuned_1_words:.3f}")
 
 finetuned_2_words = evaluate_model(semsim, data_words)
 print(f"Fine-tuned model accuracy: {finetuned_2_words:.3f}")
 
 finetuned_3_words = evaluate_model(score, data_words)
-print(f"Fine-tuned model accuracy: {finetuned_3_words:.3f}")'''
+print(f"Fine-tuned model accuracy: {finetuned_3_words:.3f}")
 
-finetuned_4_words = evaluate_model(uncertainty, data_words)
-print(f"Fine-tuned model accuracy: {finetuned_4_words:.3f}")
+'''finetuned_4_words = evaluate_model(uncertainty, data_words)
+print(f"Fine-tuned model accuracy: {finetuned_4_words:.3f}")'''
 
 #### TOKENS MATCHED EVALUATION
 
-'''finetuned_1_tokens = evaluate_model(blue, data_tokens)
-print(f"Fine-tuned model accuracy: {finetuned_1_tokens:.3f}")
+#finetuned_1_tokens = evaluate_model(blue, data_tokens)
+#print(f"Fine-tuned model accuracy: {finetuned_1_tokens:.3f}")
 
 finetuned_2_tokens = evaluate_model(semsim, data_tokens)
 print(f"Fine-tuned model accuracy: {finetuned_2_tokens:.3f}")
 
 finetuned_3_tokens = evaluate_model(score, data_tokens)
-print(f"Fine-tuned model accuracy: {finetuned_3_tokens:.3f}")'''
+print(f"Fine-tuned model accuracy: {finetuned_3_tokens:.3f}")
 
-finetuned_4_tokens = evaluate_model(uncertainty, data_tokens)
-print(f"Fine-tuned model accuracy: {finetuned_4_tokens:.3f}")
+'''finetuned_4_tokens = evaluate_model(uncertainty, data_tokens)
+print(f"Fine-tuned model accuracy: {finetuned_4_tokens:.3f}")'''

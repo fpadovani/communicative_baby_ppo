@@ -9,3 +9,4 @@ txt_files/
 .venv/
 evaluation/test_suites/
 fine_tuned_models/
+models/
