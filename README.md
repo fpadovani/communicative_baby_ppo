@@ -73,11 +73,11 @@ In the meantime I have scripts that evaluate our baseline and finetuned models o
 
 **BLUE first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **62.48%** on Zorro and **62%** on the minimal pairs evaluation set based on words match, and **61%** on dialogue minimal pairs based on tokens match. It scores **40.7%** on the lexical decision task. \
 
-**SEMSIM first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores ...% on Zorro and ...% on the minimal pairs evaluation set based on words match, and ...% on dialogue minimal pairs based on tokens match. It scores **39.7%** on the lexical decision task. \
+**SEMSIM first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **64.68%** on Zorro and **61.1%** on the minimal pairs evaluation set based on words match, and **63.6%** on dialogue minimal pairs based on tokens match. It scores **39.7%** on the lexical decision task. \
 
-**SCORE first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores ...% on Zorro and ...% on the minimal pairs evaluation set based on words match, and ...% on dialogue minimal pairs based on tokens match. \
+**SCORE first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **65.18%%** on Zorro and **60.6%%** on the minimal pairs evaluation set based on words match, and **62.5%** on dialogue minimal pairs based on tokens match. It scores **40.2%** on the lexical decision task.\
 
-**UNCERTAINTY first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores ...% on Zorro and 60.9% on the minimal pairs evaluation set based on words match, and ...% on dialogue minimal pairs based on tokens match. \
+**UNCERTAINTY first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **...%** on Zorro and **63.7%** on the minimal pairs evaluation set based on words match, and **...%** on dialogue minimal pairs based on tokens match. \ It scores **40.8%** on the lexical decision task. \
 
 
 

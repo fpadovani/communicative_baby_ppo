@@ -2,8 +2,8 @@ from huggingface_hub import hf_hub_download
 import os
 
 # Specify your model repo and target subfolder
-repo_id = "fpadovani/rfscore-kl"
-subfolder = "checkpoint-5000"
+repo_id = "fpadovani/rfconfig-baby"
+subfolder = "epoch-1"
 
 # Files in that subfolder (manually list them or scrape the repo API)
 files = [
@@ -16,7 +16,7 @@ files = [
 ]
 
 # Where to store locally
-local_dir = "models/rfscore-kl/checkpoint-5000"
+local_dir = "models/rfconfig-baby/epoch-1"
 os.makedirs(local_dir, exist_ok=True)
 
 # Download each file

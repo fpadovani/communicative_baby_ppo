@@ -51,23 +51,23 @@ def evaluate_zorro(lm, test_suite_folder, lower_case=False):
 
 BASELINE_PATH = "bbunzeck/another-llama"
 BLUE = "./models/rfblue-kl/epoch-1/epoch-1"
-'''SEMSIM = "./models/rfsem-kl/epoch-1/epoch-1"
+SEMSIM = "./models/rfsem-kl/epoch-1/epoch-1"
 SCORE = "./models/rfscore-kl/checkpoint-5000/checkpoint-5000"
-UNCERTAINTY = "./models/rfconf-baby/epoch-1/epoch-1"'''
-zorro_folder = '/Users/frapadovani/Desktop/communicative_baby_dpo/evaluation/test_suites/zorro'
+UNCERTAINTY = "./models/rfconfig-baby/epoch-1/epoch-1"
+zorro_folder = './evaluation/test_suites/zorro'
 
 baseline_model = scorer.IncrementalLMScorer(BASELINE_PATH, device='cpu')
 blue = scorer.IncrementalLMScorer(BLUE, device='cpu')
-'''semsim = scorer.IncrementalLMScorer(SEMSIM, device='cpu')
+semsim = scorer.IncrementalLMScorer(SEMSIM, device='cpu')
 score = scorer.IncrementalLMScorer(SCORE, device='cpu')
-uncertainty = scorer.IncrementalLMScorer(SEMSIM, device='cpu')'''
+uncertainty = scorer.IncrementalLMScorer(UNCERTAINTY, device='cpu')
 
-'''paradigm_acc_baseline, overall_acc_baseline = evaluate_zorro(
+paradigm_acc_baseline, overall_acc_baseline = evaluate_zorro(
     lm=baseline_model,
     test_suite_folder=zorro_folder,
     lower_case=True
 )
-print(paradigm_acc_baseline, overall_acc_baseline)'''
+print(paradigm_acc_baseline, overall_acc_baseline)
 
 paradigm_acc_finetuned1, overall_acc_finetuned1 = evaluate_zorro(
     lm=blue,
@@ -77,7 +77,7 @@ paradigm_acc_finetuned1, overall_acc_finetuned1 = evaluate_zorro(
 
 print(paradigm_acc_finetuned1, overall_acc_finetuned1)
 
-'''paradigm_acc_finetuned2, overall_acc_finetuned2 = evaluate_zorro(
+paradigm_acc_finetuned2, overall_acc_finetuned2 = evaluate_zorro(
     lm=semsim,
     test_suite_folder=zorro_folder,
     lower_case=True
@@ -97,6 +97,6 @@ paradigm_acc_finetuned4, overall_acc_finetuned4 = evaluate_zorro(
     lower_case=True
 )
 print(paradigm_acc_finetuned4, overall_acc_finetuned4)
-'''
+
 
 
