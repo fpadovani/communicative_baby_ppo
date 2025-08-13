@@ -21,65 +21,35 @@ We collected only one LLM answer, used as ground truth for all the other reward 
 
 ## PPO Training
 
-- Use `ppo_training_sem.py` 
-
-### Reward Functions 
-
-1. UNIGRAM BLEU (based on the unigram token overlap between child and teacher utterances)
-2. SEMANTIC SIMILARITY (cosine similarity calculated using this model `embedder = SentenceTransformer('all-MiniLM-L6-v2')`
-
-
-You can fine-tune with PPO the baseline model using this command and providing semsim or bleu as reward_fn function:
-
-<pre><code> python ppo_training_blue_semsim --reward_fn semsim </code></pre>
-
-3. The third type of reward is directly assigned by the LLM (allenai/OLMo-2-1124-7B-Instruct) model, that is asked to score the answer of the baby model to a mother prompt. This is the prompt I used:
-
-<pre><code> 
-"<|system|>\nYou are presented with a dialogue between a mother (MOT) and a child (CHI). "
-"Please rate how contextually appropriate and fluent the child's response is, on a scale from 0 (completely unfitting) "
-"to 5 (perfectly fine answer). If CHI answer is too short rate it low.\n<|end|>\n"
-f"<|user|>\nMOT: {mot}\nCHI: {chi}\n<|end|>\n<|assistant|>\n"
-</code></pre>
-
-I have two script to run this PPO Training, one is slower than the other (that uses VLLM).
-
-- `ppo_training_score.py`
-- `ppo_training_score_faster.py`
+- Use `ppo_training_blue_semsim.py --reward_fn bleu/semsim` to fine-tune with Bleu or Semantic Similarity Reward functions
+- Use `ppo_training_score.py` to fine-tune with OLMo-generated rewards
+- Use `ppo_training_conf.py` to fine-tune with Confidence scores as rewards
 
 
 The fine-tuned models can be found here:
-- [fpadovani/rfblue-baby](https://huggingface.co/fpadovani/rfblue-baby)
-- [fpadovani/rfsem1-baby](https://huggingface.co/fpadovani/rfsem1-baby)
-- [fpadovani/rfscore-baby](https://huggingface.co/fpadovani/rfscore-baby)
+- [CLAUSE-Bielefeld/communicative-baby-rfbleu](https://huggingface.co/CLAUSE-Bielefeld/communicative-baby-rfbleu)
+- [CLAUSE-Bielefeld/communicative-baby-rfsemsim](https://huggingface.co/CLAUSE-Bielefeld/communicative-baby-rfsemsim)
+- [CLAUSE-Bielefeld/communicative-baby-rfolmo_score](https://huggingface.co/CLAUSE-Bielefeld/communicative-baby-rfolmo_score)
+- [CLAUSE-Bielefeld/communicative-baby-rfconfidence](https://huggingface.co/CLAUSE-Bielefeld/communicative-baby-rfconfidence)
 
-## Evaluation with DPO
-We should familiarize with the BabyLM Challenge evaluation pipeline of this year -> [2025](https://github.com/babylm/evaluation-pipeline-2025)
+## Datasets for Evaluation 
 
-In the meantime I have scripts that evaluate our baseline and finetuned models on Zorro, on our own minimal dialogue pair dataset (with words matched length and token matched length) and on single lexical items (taken from Bastian lexical decision task paper -> [bbunzeck/lexical-decision](https://huggingface.co/datasets/bbunzeck/lexical-decision):
+- this is the dataset split for evaluation with appropriate and random sentence matched in terms of word length -> [**dpo_dataset/huggingface_dpo_format_eval.json**](https://huggingface.co/datasets/fpadovani/dialogue_eval_words) \
+- this is the dataset split for evaluation with appropriate and random sentence matched in terms of token length -> [**dpo_dataset/huggingface_dpo_format_eval_tokens.json**](https://huggingface.co/datasets/fpadovani/dialogue_eval_tokens) \
+
+## Evaluation
+
+Scripts that evaluate our baseline and finetuned models on Zorro, on our own minimal dialogue pair dataset (with words matched length and token matched length) and on single lexical items:
 
 - *`./evaluation/evaluate_zorro.py`* 
 - *`./evaluation/evaluate_dialogue_minpairs.py`*
 - *`./evaluation/evaluate_lexicon.py`*
 
 
-**As soon as I have the final results I will post them here!**
-
-**BASELINE**: our *bbunzeck/another-llama* baseline model scores **65.5%%** (accuracy) on Zorro and **64.3%** on the minimal pairs evaluation set based on words match, and **63.8%** on dialogue minimal pairs based on tokens match. It scores **40.3%** on the lexical decision task. \
-
-**BLUE first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **62.48%** on Zorro and **62%** on the minimal pairs evaluation set based on words match, and **61%** on dialogue minimal pairs based on tokens match. It scores **40.7%** on the lexical decision task. \
-
-**SEMSIM first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **64.68%** on Zorro and **61.1%** on the minimal pairs evaluation set based on words match, and **63.6%** on dialogue minimal pairs based on tokens match. It scores **39.7%** on the lexical decision task. \
-
-**SCORE first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **65.18%%** on Zorro and **60.6%%** on the minimal pairs evaluation set based on words match, and **62.5%** on dialogue minimal pairs based on tokens match. It scores **40.2%** on the lexical decision task.\
-
-**UNCERTAINTY first EPOCH**: the last checkpoint of our fine-tuned model on real dpo pairs scores **...%** on Zorro and **63.7%** on the minimal pairs evaluation set based on words match, and **...%** on dialogue minimal pairs based on tokens match. \ It scores **40.8%** on the lexical decision task. \
-
-
-
 ## Plots of reward 
 In the `./plots` folder you can find the reward trend. The plots that are present do not refer to a complete training.
 I will upload the final ones as soon as I have the fully fine-tuned models. The important thing is the growing reward ;)
+
 
 
 
