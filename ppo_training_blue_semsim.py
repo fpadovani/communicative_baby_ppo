@@ -84,13 +84,13 @@ def main():
 
     if args.reward_fn == "bleu":
         reward_fn = reward_fn_blue
-        repo_name = "rfblue-abs-002"
+        repo_name = "rfblue-kl"
         log_rewards_file = "./txt_files/reward_tracking_blue.csv"
         log_file = "ppo_training_blue.txt"
         
     else:
         reward_fn = reward_fn_sem_similarity
-        repo_name = "rfsem-abs-002"
+        repo_name = "rfsem-kl"
         log_rewards_file = "./txt_files/reward_tracking_semsim.csv"
         log_file = "ppo_training_semsim.txt"
     
@@ -100,7 +100,7 @@ def main():
     with open(log_rewards_file, "w") as f:
         f.write("epoch,batch,avg_reward\n")
 
-    BABY = "bbunzeck/another-llama"
+    BABY = "CLAUSE-Bielefeld/llamalogue"
     tokenizer_baby = AutoTokenizer.from_pretrained(BABY, use_fast=True)
     baby = AutoModelForCausalLMWithValueHead.from_pretrained(BABY)
     ref_baby = AutoModelForCausalLMWithValueHead.from_pretrained(BABY)

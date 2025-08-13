@@ -65,7 +65,7 @@ class LRUCache:
 
 def main():
     # === Models ===
-    BABY = "bbunzeck/another-llama"
+    BABY = "CLAUSE-Bielefeld/llamalogue"
     tokenizer_baby = AutoTokenizer.from_pretrained(BABY, use_fast=True)
     tokenizer_baby.pad_token = tokenizer_baby.eos_token
     baby_model = AutoModelForCausalLMWithValueHead.from_pretrained(BABY)

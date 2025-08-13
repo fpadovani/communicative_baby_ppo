@@ -6,7 +6,6 @@ from tqdm import tqdm
 from huggingface_hub import list_repo_refs
 
 # === Model paths ===
-BASELINE_PATH = "bbunzeck/another-llama"
 BLUE = "./models/rfbleu/epoch-1/epoch-1"
 SEMSIM = "./models/rfsem-kl/epoch-1/epoch-1"
 SCORE = "./models/rfscore-kl/checkpoint-5000/checkpoint-5000"
@@ -51,7 +50,6 @@ results = []
 
 # === Evaluate local & baseline models ===
 models_to_eval = [
-    ("Baseline", BASELINE_PATH),
     ("Blue", BLUE),
     ("SemSim", SEMSIM),
     ("Score", SCORE),
