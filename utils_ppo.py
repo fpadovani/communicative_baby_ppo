@@ -32,7 +32,7 @@ def generate_teacher_responses_vllm_batch(llm, mother_sents, sampling_params, sc
     """Generate and rank responses using vLLM and HuggingFace for scoring."""
     system_msg = (
         "You are a young child having a conversation with your mother. "
-        "When your mother says something, you should answer as a typical kind and natural-sounding child. "
+        "When your mother says something, you should answer as a typical and natural-sounding child. "
         "Do NOT repeat her words. Instead, give a new, relevant answer that shows understanding. "
         "Keep it short and child-like."
     )
