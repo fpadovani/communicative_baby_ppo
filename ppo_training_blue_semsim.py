@@ -122,11 +122,6 @@ def main():
     config = PPOConfig(
         batch_size       = 16,
         mini_batch_size  = 4)
-    '''learning_rate    = 5e-6,    # lower LR
-        log_with         = None,
-        kl_penalty       = "abs",
-        #kl_target        = 0.05,   # tighter KL (adaptive)
-        init_kl_coef     = 0.02)'''
 
     ppo = PPOTrainer(
         config,
