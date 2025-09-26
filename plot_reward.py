@@ -1,128 +1,111 @@
 import pandas as pd, matplotlib.pyplot as plt, pathlib
 
-# Load the reward log
-file_path = "./txt_files/reward_tracking_log_blue_1_best.csv"
-df = pd.read_csv(file_path)
-
-# Sort by batch number just in case
-df = df.sort_values(by="batch")
-
-# Calculate moving average with window size 10
-window_size = 100
-df["moving_avg_reward"] = df["avg_reward"].rolling(window=window_size).mean()
-
-# Plotting
-plt.figure(figsize=(10, 6))
-#plt.ylim(0, 4)  # Set y-axis limits to match the reward scale (1-5)
-plt.plot(df["batch"], df["moving_avg_reward"], label=f"{window_size}-Batch Moving Average", color='blue')
-plt.xlabel("Batch")
-plt.ylabel("Average Reward")
-plt.title(f"Reward Trend Over Time (Window = {window_size})")
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.show()
-plt.savefig("./plots/reward_trend_plot_blue_best.png")  # Save the plot as an image file
-
-
-
-# Load the reward log
-file_path = "./txt_files/reward_tracking_log_sem_1_best.csv"
-df = pd.read_csv(file_path)
-
-# Sort by batch number just in case
-df = df.sort_values(by="batch")
-
-# Calculate moving average with window size 10
-window_size = 200
-df["moving_avg_reward"] = df["avg_reward"].rolling(window=window_size).mean()
-
-# Plotting
-plt.figure(figsize=(10, 6))
-#plt.ylim(0, 4)  # Set y-axis limits to match the reward scale (1-5)
-plt.plot(df["batch"], df["moving_avg_reward"], label=f"{window_size}-Batch Moving Average", color='blue')
-plt.xlabel("Batch")
-plt.ylabel("Average Reward")
-plt.title(f"Reward Trend Over Time (Window = {window_size})")
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.show()
-plt.savefig("./plots/reward_trend_plot_sem_1_best.png")  # Save the plot as an image file
-
-
-# Load the reward log
-file_path = "./csv_logs/reward_tracking_conf.csv"
-df = pd.read_csv(file_path)
-
-# Sort by batch number just in case
-df = df.sort_values(by="batch")
-
-# Calculate moving average with window size 10
-window_size = 200
-df["moving_avg_reward"] = df["avg_reward"].rolling(window=window_size).mean()
-
-# Plotting
-plt.figure(figsize=(10, 6))
-#plt.ylim(0, 4)  # Set y-axis limits to match the reward scale (1-5)
-plt.plot(df["batch"], df["moving_avg_reward"], label=f"{window_size}-Batch Moving Average", color='blue')
-plt.xlabel("Batch")
-plt.ylabel("Average Reward")
-plt.title(f"Reward Trend Over Time (Window = {window_size})")
-plt.grid(True)
-plt.legend()
-plt.tight_layout()
-plt.show()
-plt.savefig("reward_trend_plot_conf.png")  # Save the plot as an image file
-
-
-
-file_path = pathlib.Path("./csv_logs/reward_tracking_conf.csv")
 window = 200
 
+##### BLEU #####
+file_path = pathlib.Path("./txt_files/rewards_files/reward_tracking_blue.csv")
 df = pd.read_csv(file_path)
-
-# single step axis
 max_batch = df["batch"].max()
-df["step"] = (df["epoch"]-1) * max_batch + df["batch"]
+df["step"] = (df["epoch"] - 1) * max_batch + df["batch"]
 df = df.sort_values("step")
-
 df["moving"] = df["avg_reward"].rolling(window).mean()
 
-plt.figure(figsize=(10,5))
-plt.plot(df["step"], df["moving"], label=f"{window}-batch moving avg")
-plt.axhline(0, color="k", lw=0.5)
-plt.xlabel("global batch #"); plt.ylabel("avg_reward")
-plt.title("Reward trend")
-plt.grid(True); plt.legend()
-
-plt.savefig("reward_trend_plot_conf2.png")
-# plt.show()  # only if you’re in an interactive session
-print("Saved → ./plots/reward_trend_plot_conf2.png")
-
-
-
-file_path = pathlib.Path("./csv_logs/reward_tracking_conf.csv")
-if not file_path.exists():
-    raise FileNotFoundError(file_path)
-
-df = pd.read_csv(file_path)
-
-# Build a monotonic axis
-max_batch = df["batch"].max()
-df["step"] = (df["epoch"]-1)*max_batch + df["batch"]
-df = df.sort_values("step")
-
-window = 50          # batches
-df["moving"] = df["avg_reward"].rolling(window).mean()
-
-plt.figure(figsize=(10,5))
-plt.plot(df["step"], df["moving"], label=f"rolling {window}", color="blue")
-plt.axhline(0, color="k", lw=0.5)
-plt.xlabel("global batch #")
-plt.ylabel("avg_reward")
-plt.title("Baby PPO reward")
-plt.grid(True); plt.legend()
-plt.savefig("reward_trend_plot_conf3.png")
+plt.figure(figsize=(8, 5))
+plt.plot(df["step"], df["moving"], label=f"{window}-batch moving avg", linewidth=1.2)  # default color
+plt.axhline(0, color="grey", lw=0.5)
+plt.axvline(x=13750, color="red", linestyle="--", linewidth=0.8)
+plt.text(13750 + 200, 0.05, "epoch 1", color="black", fontsize=12)
+plt.ylim(0, 1)
+plt.xlabel("Global batch", fontsize=20, labelpad=12)
+plt.ylabel("Reward", fontsize=20, labelpad=12)
+plt.xticks(fontsize=16, rotation=20)
+plt.yticks(fontsize=20)
+plt.title("1-gram BLEU", fontsize=25, pad=20, loc='left', x=0.32)
+plt.grid(True, linestyle='--', linewidth=0.5, color='lightgrey', alpha=0.7)
+for spine in plt.gca().spines.values(): spine.set_edgecolor('lightgrey')
+plt.legend(fontsize=22)
+plt.tight_layout()
+plt.savefig("./final_plots/bleu.pdf")
 plt.close()
-print("Plot saved to plots/reward_trend_plot_conf3.png")
+
+
+##### SEM_SIM #####
+file_path = pathlib.Path("./txt_files/rewards_files/reward_tracking_semsim.csv")
+df = pd.read_csv(file_path)
+max_batch = df["batch"].max()
+df["step"] = (df["epoch"] - 1) * max_batch + df["batch"]
+df = df.sort_values("step")
+df["moving"] = df["avg_reward"].rolling(window).mean()
+
+plt.figure(figsize=(8, 5))
+plt.plot(df["step"], df["moving"], label=f"{window}-batch moving avg", color="#0d3d73", linewidth=1.2)
+plt.axhline(0, color="grey", lw=0.5)
+plt.axvline(x=13750, color="red", linestyle="--", linewidth=0.8)
+plt.text(13750 + 200, 0.05, "epoch 1", color="black", fontsize=12)
+plt.ylim(0, 1)
+plt.xlabel("Global batch", fontsize=20, labelpad=12)
+plt.ylabel("Reward", fontsize=20, labelpad=12)
+plt.xticks(fontsize=16, rotation=20)
+plt.yticks(fontsize=20)
+plt.title("Semantic Similarity", fontsize=25, pad=20, loc='left', x=0.23)
+plt.grid(True, linestyle='--', linewidth=0.5, color='lightgrey', alpha=0.7)
+for spine in plt.gca().spines.values(): spine.set_edgecolor('lightgrey')
+plt.legend(fontsize=22)
+plt.tight_layout()
+plt.savefig("./final_plots/semsim.pdf")
+plt.close()
+
+
+##### SCORE #####
+file_path = pathlib.Path("./txt_files/rewards_files/reward_tracking_log_score.csv")
+df = pd.read_csv(file_path)
+max_batch = df["batch"].max()
+df["step"] = (df["epoch"] - 1) * max_batch + df["batch"]
+df = df.sort_values("step")
+df = df[df["step"] <= 11000]
+df["moving"] = df["avg_reward"].rolling(window).mean()
+
+plt.figure(figsize=(8, 5))
+plt.plot(df["step"], df["moving"], label=f"{window}-batch moving avg", color="#3399ff", linewidth=1.2)
+plt.axhline(0, color="grey", lw=0.5)
+plt.axvline(x=13750, color="red", linestyle="--", linewidth=0.8)
+plt.text(13750 + 300, 2.6, "epoch 1", color="black", fontsize=12)
+plt.ylim(2.5, 3.5)
+plt.xlabel("Global batch", fontsize=20, labelpad=12)
+plt.ylabel("Reward", fontsize=20, labelpad=12)
+plt.xticks(fontsize=16, rotation=20)
+plt.yticks(fontsize=20)
+plt.title("LLM Score", fontsize=25, pad=20, loc='left', x=0.36)
+plt.grid(True, linestyle='--', linewidth=0.5, color='lightgrey', alpha=0.7)
+for spine in plt.gca().spines.values(): spine.set_edgecolor('lightgrey')
+plt.legend(fontsize=22)
+plt.tight_layout()
+plt.savefig("./final_plots/score.pdf")
+plt.close()
+
+
+##### CONFIDENCE #####
+file_path = pathlib.Path("./txt_files/rewards_tracking/reward_tracking_conf_last.csv")
+df = pd.read_csv(file_path)
+max_batch = df["batch"].max()
+df["step"] = (df["epoch"] - 1) * max_batch + df["batch"]
+df = df.sort_values("step")
+df["moving"] = df["avg_reward"].rolling(window).mean()
+
+plt.figure(figsize=(8, 5))
+plt.plot(df["step"], df["moving"], label=f"{window}-batch moving avg", color="#66b3ff", linewidth=1.2)
+plt.axhline(0, color="grey", lw=0.5)
+plt.axvline(x=8645, color="red", linestyle="--", linewidth=0.8)
+plt.text(8645 + 150, 0.25, "epoch 1", color="black", fontsize=12)
+plt.ylim(0.2, 1)
+plt.xlabel("Global batch", fontsize=20, labelpad=12)
+plt.ylabel("Reward", fontsize=20, labelpad=12)
+plt.xticks(fontsize=16, rotation=20)
+plt.yticks(fontsize=20)
+plt.title("Confidence", fontsize=25, pad=20, loc='left', x=0.33)
+plt.grid(True, linestyle='--', linewidth=0.5, color='lightgrey', alpha=0.7)
+for spine in plt.gca().spines.values(): spine.set_edgecolor('lightgrey')
+plt.legend(fontsize=22)
+plt.tight_layout()
+plt.savefig("./final_plots/reward_trend_plot_confidence.pdf")
+plt.close()
