@@ -1,4 +1,5 @@
-# BabyLM Challenge 2025 - PPO fine-tuning for a Baby Model 
+# BabyLM Challenge 2025 
+### *PPO fine-tuning for a Communicative Baby Model* 
 To run correctly the code in this repository you need this version of trl==0.8.6 (as specified in the requirements.txt file). 
 
 ## Model
@@ -49,6 +50,7 @@ Scripts that evaluate our baseline and finetuned models on Zorro, on our own min
 
 ## Plots of reward 
 In the `./plots` folder you can find the reward trend plots. 
+
 
 
 
