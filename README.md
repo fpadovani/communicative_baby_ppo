@@ -17,6 +17,7 @@ We used the `answers_generation_vllm_fast.py` script to prompt a teacher model -
 </code></pre>
 
 We collected 10 different answers that are used to calculate the Confidence reward (refer to our papers for more details) here -> [fpadovani/10_teacher_ground_truth](https://huggingface.co/datasets/fpadovani/10_teacher_ground_truth)
+
 We collected only one LLM answer, used as ground truth for all the other reward functions (Bleu, Semantic Similarity and LLM-score) here -> [fpadovani/single_teacher_ground_truth](https://huggingface.co/datasets/fpadovani/single_teacher_ground_truth)
 
 ## PPO Training
@@ -47,8 +48,8 @@ Scripts that evaluate our baseline and finetuned models on Zorro, on our own min
 
 
 ## Plots of reward 
-In the `./plots` folder you can find the reward trend. The plots that are present do not refer to a complete training.
-I will upload the final ones as soon as I have the fully fine-tuned models. The important thing is the growing reward ;)
+In the `./plots` folder you can find the reward trend plots. 
+
 
 
 
